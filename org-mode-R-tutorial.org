@@ -40,6 +40,29 @@ anything less than 7.01, you'll need to update to run the examples.
 If you have an older version of org-mode, and just want to read about
 the possibilities, you can continue on.
 
+* TOC :TOC_2:noexport:
+- [[#introduction][Introduction]]
+  - [[#system-prerequisites-for-this-tutorial][System Prerequisites for this tutorial]]
+- [[#setting-up-org-mode-for-source-code-evaluation][Setting up org-mode for source code evaluation]]
+  - [[#prompting-for-confirmation-before-evaluating-code][Prompting for confirmation before evaluating code]]
+  - [[#other-supported-languages][Other supported languages]]
+- [[#org-mode-source-code-blocks-finally-we-can-start][Org-mode source code blocks (Finally, we can start!)]]
+  - [[#exporting-pretty-printed-source-code-blocks][Exporting pretty-printed source code blocks]]
+  - [[#evaluating-the-code-block-using-org-mode][Evaluating the code block using org-mode]]
+- [[#passing-data-between-code-blocks][Passing data between code blocks]]
+  - [[#r-session-based-evaluation][R session-based evaluation]]
+  - [[#code-blocks-using-different-languages][Code blocks using different languages]]
+- [[#inserting-r-graphical-output][Inserting R graphical output]]
+- [[#inserting-latex-output][Inserting LaTeX output]]
+  - [[#a-simple-example][A simple example]]
+  - [[#a-more-complicated-example-exporting-latex-in-buffer-to-html-and-to-pdf][A more complicated example, exporting LaTeX in buffer, to HTML, and to PDF]]
+- [[#putting-it-all-together-a-notebook-interface-to-r][Putting it all together, a notebook interface to R]]
+- [[#tangling-code][Tangling code]]
+  - [[#instructing-org-mode-how-to-tangle-with-header-arguments][Instructing org-mode how to tangle with header arguments]]
+  - [[#tangling-the-document][Tangling the document]]
+- [[#exporting-documents-containing-code-and-results][Exporting documents containing code and results]]
+- [[#where-to-go-from-here][Where to go from here?]]
+
 * Introduction
 
 Emacs org-mode 7.01 has an exciting new feature that lets you evaluate
@@ -153,8 +176,8 @@ vary, please let me know.
 Here is a list of software we need to run the examples:
 1) org-mode 7.01 or greater, see [[http://orgmode.org]]
 2) a working R installation, see [[http://www.R-project.org]]
-3) The R examples use the ggplot2 and Hmisc packages from CRAN. Simply install from the
-   R command line by issuing the command, 
+3) The R examples use the ggplot2 and Hmisc packages from CRAN. Simply install
+   from the R command line by issuing the command,
 #+begin_src R :eval never :exports code 
   install.packages(c("ggplot2", "Hmisc"))
 #+end_src
