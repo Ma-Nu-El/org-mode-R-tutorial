@@ -9,6 +9,7 @@
 #+STYLE:      <style type="text/css">#outline-container-introduction{ clear:both; }</style>
 #+BABEL: :exports both
 
+
 This is an introduction to writing and evaluating R
 ([[http://www.R-project.org]]) source code within Emacs org-mode
 ([[http://orgmode.org]]) buffers. Why you might want to do this is covered
@@ -40,7 +41,7 @@ anything less than 7.01, you'll need to update to run the examples.
 If you have an older version of org-mode, and just want to read about
 the possibilities, you can continue on.
 
-* TOC :TOC_2:noexport:
+* TOC :TOC_3:noexport:
 - [[#introduction][Introduction]]
   - [[#system-prerequisites-for-this-tutorial][System Prerequisites for this tutorial]]
 - [[#setting-up-org-mode-for-source-code-evaluation][Setting up org-mode for source code evaluation]]
@@ -49,6 +50,10 @@ the possibilities, you can continue on.
 - [[#org-mode-source-code-blocks-finally-we-can-start][Org-mode source code blocks (Finally, we can start!)]]
   - [[#exporting-pretty-printed-source-code-blocks][Exporting pretty-printed source code blocks]]
   - [[#evaluating-the-code-block-using-org-mode][Evaluating the code block using org-mode]]
+    - [[#obtaining-the-return-value-of-an-r-code-block][Obtaining the return value of an R code block]]
+    - [[#obtaining-all-code-block-output][Obtaining all code block output]]
+    - [[#more-information-on-org-mode-source-block-headers][More information on org-mode source block headers]]
+    - [[#inline-code-evaluation][Inline code evaluation]]
 - [[#passing-data-between-code-blocks][Passing data between code blocks]]
   - [[#r-session-based-evaluation][R session-based evaluation]]
   - [[#code-blocks-using-different-languages][Code blocks using different languages]]
@@ -147,13 +152,13 @@ this they will look like:
 # reading in org-mode, so I won't have to interject these comments.
 
 #+begin_src R :exports code
-  # some R code 
-  square <- function(x) 
-  {
-    x * x
-  }
-    
-  square(1:10)
+                                        # some R code
+square <- function(x)
+{
+  x * x
+}
+
+square(1:10)
 #+end_src 
 
 It's something to be aware of when following along from an exported
@@ -179,12 +184,12 @@ Here is a list of software we need to run the examples:
 3) The R examples use the ggplot2 and Hmisc packages from CRAN. Simply install
    from the R command line by issuing the command,
 #+begin_src R :eval never :exports code 
-  install.packages(c("ggplot2", "Hmisc"))
+install.packages(c("ggplot2", "Hmisc"))
 #+end_src
 
-   The directory containing the R binary must be in your PATH
-   environment variable.  For Windows users, you will probably have to
-   add this yourself.
+The directory containing the R binary must be in your PATH
+environment variable.  For Windows users, you will probably have to
+add this yourself.
 
 For LaTeX support, 
 4) a working LaTeX installation, see [[http://latex-project.org]]. Windows users
@@ -216,7 +221,7 @@ buffer),
    way to test if png support is working is to simply open a png file
    within Emacs from dired.
   
-* Setting up org-mode for source code evaluation 
+* Setting up org-mode for source code evaluation
 
 Setting up org-mode to run source code is very simple. So simple in
 fact, that we can do it from right inside this document using source
@@ -243,10 +248,10 @@ tutorial will explain the syntax of the block, so don't worry about
 that now!
 
 #+begin_src emacs-lisp :results silent
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((R . t)
-     (latex . t)))
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((R . t)
+   (latex . t)))
 #+end_src
 
 If you received any type of error message, please make sure that you
@@ -267,6 +272,9 @@ evaluate it. If you're asked to confirm evaluation, go for it!
 #+begin_src emacs-lisp :results value
 (org-version)
 #+end_src
+
+#+RESULTS:
+: 9.5
 
 This time, because of the different code block argument, which will be
 explained later, we see one great feature of org-mode source code
@@ -289,7 +297,7 @@ blocks. /You may view this as a security risk/. Always look over the
 code you're going to evaluate before submitting it to the system. 
 
 #+begin_src emacs-lisp :results silent :exports code
-  (setq org-confirm-babel-evaluate nil)
+(setq org-confirm-babel-evaluate nil)
 #+end_src
 
 ** Other supported languages
@@ -333,13 +341,26 @@ how this new ESS-mode buffer is displayed by setting the
 org-src-window-setup variable in Emacs.
 
 #+begin_src R :exports code
-  square <- function(x) 
-  {
-    x * x
-  }
-    
-  square(1:10)
+square <- function(x)
+{
+  x * x
+}
+
+square(1:10)
 #+end_src 
+
+#+RESULTS:
+|   1 |
+|   4 |
+|   9 |
+|  16 |
+|  25 |
+|  36 |
+|  49 |
+|  64 |
+|  81 |
+| 100 |
+
 
 So now we have this code block defined. Why would we want to do
 something like that with org-mode? First and foremost so that when we
@@ -363,7 +384,7 @@ the following in my Emacs init file, but you can once again just type
 C-c C-c to submit the code and evaluate the lisp.
 
 #+begin_src emacs-lisp :results silent :exports code
- (add-to-list 'load-path "/path/to/org-mode/contrib/lisp")
+(add-to-list 'load-path "/path/to/org-mode/contrib/lisp")
 #+end_src
 
 ** Evaluating the code block using org-mode
@@ -399,12 +420,12 @@ confirm that you want to evaluate the following R code. So go ahead,
 evaluate the following R code block with C-c C-c and see what happens.
 
 #+begin_src R
-  square <- function(x) {
-    x * x
-  }
-  
-  square(1:10)
-#+end_src 
+square <- function(x) {
+  x * x
+}
+
+square(1:10)
+#+end_src
 
 If you've submitted the code block using C-c C-c, and everything went
 well, you should have noticed that your buffer was modified. Org-mode
@@ -433,12 +454,12 @@ output. Notice the syntax for setting source code block arguments
 below.
 
 #+begin_src R :results output
-  square <- function(x) {
-    x * x
-  }
+square <- function(x) {
+  x * x
+}
 
-  square(1:10)
-#+end_src 
+square(1:10)
+#+end_src
 
 
 Now we see the typical R notation for printing a vector. Note in the
@@ -448,15 +469,15 @@ capture things printed to the screen with the `cat` function for
 example, or the printing of the variable `x`.
 
 #+begin_src R :results output
-  x <- 1:10
-  x
-  square <- function(x) {
-    cat("This is the square function.\n")
-    x * x
-  }
-  
-  square(1:10)
-#+end_src 
+x <- 1:10
+x
+square <- function(x) {
+  cat("This is the square function.\n")
+  x * x
+}
+
+square(1:10)
+#+end_src
 
 Try changing the :results argument to `value` (which is the same as
 omitting the argument completely, since 'value' is the default ), and
@@ -514,10 +535,10 @@ just like we do with R files in ESS.
 You simply use the :session argument to the org-mode source block.   
 
 #+begin_src R :session :results output
-  square <- function(x) {
-    x * x
-  }
-  x <- 1:10 
+square <- function(x) {
+  x * x
+}
+x <- 1:10
 #+end_src 
 
 So, the above code block defines our function (square) and object (x).
@@ -525,7 +546,7 @@ Now we want to apply call our square function with the x
 object. Without :session, we could not do this.
 
 #+begin_src R
-  square(x)
+square(x)
 #+end_src
 
 Running the above code block will result in an error, since a new R
@@ -533,7 +554,7 @@ session was started, and our objects were not available. Now try the
 same code block, but with the :session argument, as below.
 
 #+begin_src R :session :results output
-  square(x)
+square(x)
 #+end_src
 
 The results we expect are now inserted, since we submitted this code
@@ -562,8 +583,8 @@ time you use org-mode, consider placing the code in your Emacs
 initialization file. Either way, evaluate it with C-c C-c.
 
 #+begin_src emacs-lisp :results silent :exports code
-  (add-hook 'org-babel-after-execute-hook 'org-display-inline-images)   
-  (add-hook 'org-mode-hook 'org-display-inline-images)   
+(add-hook 'org-babel-after-execute-hook 'org-display-inline-images)
+(add-hook 'org-mode-hook 'org-display-inline-images)
 #+end_src
 
 The following R code generates some graphical output. There are
@@ -587,19 +608,19 @@ several things to notice.
    to see how it works.
 
 #+begin_src R :results output graphics :file diamonds.png :bg "transparent"
-  library(ggplot2)
-  data(diamonds)
-  dsmall <-diamonds[sample(nrow(diamonds), 100), ] 
-  p <- qplot(carat, price, data = dsmall)
-  
-  plot.rrg <- function(...) roundrectGrob(gp = gpar(fill = "skyblue1", col = NA),
-                                          r = unit(0.06, "npc"))
-  
-  panel.rrg <- function(...) roundrectGrob(gp = gpar(fill = "grey80", col = NA),
-                                          r = unit(0.06, "npc"))
-  
-  p + opts(plot.background = plot.rrg) + opts(panel.background = panel.rrg)
-  
+library(ggplot2)
+data(diamonds)
+dsmall <-diamonds[sample(nrow(diamonds), 100), ]
+p <- qplot(carat, price, data = dsmall)
+
+plot.rrg <- function(...) roundrectGrob(gp = gpar(fill = "skyblue1", col = NA),
+                                        r = unit(0.06, "npc"))
+
+panel.rrg <- function(...) roundrectGrob(gp = gpar(fill = "grey80", col = NA),
+                                         r = unit(0.06, "npc"))
+
+p + opts(plot.background = plot.rrg) + opts(panel.background = panel.rrg)
+
 #+end_src
 
 This opens up many opportunities for doing interesting things with R
@@ -632,11 +653,11 @@ one.
 
 #+srcname: R-latex
 #+begin_src R :results silent :exports code
-  lf <- function() {
-      "\\LaTeX"
-  }
-  
-  lf()
+lf <- function() {
+  "\\LaTeX"
+}
+
+lf()
 #+end_src
 
 Next, we define a new source block using the "latex" language, instead
@@ -740,32 +761,32 @@ of that variable will be used.
 Here is an example of how you can configure these background colors. 
 
 #+begin_src emacs-lisp :results silent
-  (setq org-format-latex-options
-        '(:foreground default :background "rgb 1 1 1" 
-                      :scale 1.5
-                      :html-foreground "Black" :html-background "Transparent"
-                      :html-scale 1.0 
-                      :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
-  
+(setq org-format-latex-options
+      '(:foreground default :background "rgb 1 1 1"
+        :scale 1.5
+        :html-foreground "Black" :html-background "Transparent"
+        :html-scale 1.0
+        :matchers ("begin" "$1" "$" "$$" "\\(" "\\[")))
+
 #+end_src
 
 #+srcname:Hmisc-latex
 #+begin_src R :results output :exports code
-  set.seed(21879) 
-  library(Hmisc)
-    
-  df <- data.frame(age = rnorm(100, 50, 10),
-                   gender = sample(c("Male", "Female"), 100, replace = TRUE),
-                   study.drug = sample(c("Active", "Placebo"), 100, replace = TRUE))
+set.seed(21879)
+library(Hmisc)
 
-  label(df$study.drug) <- "Treatment" 
-  label(df$age) <- "Age at randomization" 
-  label(df$gender) <- "Gender" 
-    
-  latex(summary(study.drug ~ age + gender, data = df,
-                method = "reverse", overall = TRUE, test = TRUE), 
-        long = TRUE,  file = "", round = 2, exclude1 = FALSE, npct = "both",
-        where="!htbp")
+df <- data.frame(age = rnorm(100, 50, 10),
+                 gender = sample(c("Male", "Female"), 100, replace = TRUE),
+                 study.drug = sample(c("Active", "Placebo"), 100, replace = TRUE))
+
+label(df$study.drug) <- "Treatment"
+label(df$age) <- "Age at randomization"
+label(df$gender) <- "Gender"
+
+latex(summary(study.drug ~ age + gender, data = df,
+              method = "reverse", overall = TRUE, test = TRUE),
+      long = TRUE,  file = "", round = 2, exclude1 = FALSE, npct = "both",
+      where="!htbp")
 #+end_src
 
 
@@ -842,9 +863,9 @@ This first example will not extract any code from the source block.
 It is the default behavior. 
 
 #+begin_src R :tangle no :exports code
-# tangle was not specified
+                                        # tangle was not specified
 x <- 1:10
-print(x) 
+print(x)
 #+end_src
 
 
@@ -853,7 +874,7 @@ org-mode-R-tutorial.R, since we don't specify a filename for the .R
 file.
 
 #+begin_src R :tangle yes :exports code
-# tangle was specified, but no file given
+                                        # tangle was specified, but no file given
 x <- 1:10
 print(x)
 #+end_src
@@ -861,7 +882,7 @@ print(x)
 This will place the tangled code in Rcode.R, since we specify that name. 
 
 #+begin_src R :tangle Rcode.R :exports code
-# tangle was specified, and a file name given (Rcode.R)
+                                        # tangle was specified, and a file name given (Rcode.R)
 x <- 1:10
 print(x)
 #+end_src
