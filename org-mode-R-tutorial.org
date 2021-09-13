@@ -151,7 +151,7 @@ this they will look like:
 # exported version. For the rest of the tutorial, I assume you're
 # reading in org-mode, so I won't have to interject these comments.
 
-#+begin_src R :exports code
+#+begin_src R :exports code :results replace
                                         # some R code
 square <- function(x)
 {
@@ -160,6 +160,18 @@ square <- function(x)
 
 square(1:10)
 #+end_src 
+
+#+RESULTS:
+|   1 |
+|   4 |
+|   9 |
+|  16 |
+|  25 |
+|  36 |
+|  49 |
+|  64 |
+|  81 |
+| 100 |
 
 It's something to be aware of when following along from an exported
 version such as HTML, since I will be referencing source code block
@@ -854,7 +866,8 @@ we call the tangle function on the file to extract the source code!
 
 Read on to learn how to perform each of these steps. 
 
-** Instructing org-mode how to tangle with header arguments 
+** Instructing org-mode how to tangle with header arguments
+
 Let's take a look at a few examples. Each example contains an R
 comment, so that you can see in the resulting .R file where it came
 from.
